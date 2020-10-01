@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/include/c++/7.1.0",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/include/c++/7.1.0/x86_64-w64-mingw32",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/include/c++/7.1.0/backward",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/lib/gcc/x86_64-w64-mingw32/7.1.0/include",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/include",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/lib/gcc/x86_64-w64-mingw32/7.1.0/include-fixed",
+                "C:/Users/roger/omnetpp-5.6.1/tools/win64/mingw64/x86_64-w64-mingw32/include",
+                "C:/Users/roger/omnetpp-5.6.1/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}

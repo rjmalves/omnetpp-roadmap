@@ -1,0 +1,4 @@
+#!/bin/sh
+cd `dirname $0`
+../src/_01_pingpong_ideal -n .:../src $*
+# for shared lib, use: opp_run -l ../src/_01_pingpong_ideal -n .:../src $*

@@ -25,7 +25,9 @@
  * {
  *     int source;
  *     int destination;
- *     int hopCount = 0;
+ *     simtime_t sendingTime;
+ *     simtime_t recvTime;
+ *     simtime_t processingTime = 0;
  * }
  * </pre>
  */
@@ -34,7 +36,9 @@ class PingPongMsg : public ::omnetpp::cMessage
   protected:
     int source;
     int destination;
-    int hopCount;
+    ::omnetpp::simtime_t sendingTime;
+    ::omnetpp::simtime_t recvTime;
+    ::omnetpp::simtime_t processingTime;
 
   private:
     void copy(const PingPongMsg& other);
@@ -57,8 +61,12 @@ class PingPongMsg : public ::omnetpp::cMessage
     virtual void setSource(int source);
     virtual int getDestination() const;
     virtual void setDestination(int destination);
-    virtual int getHopCount() const;
-    virtual void setHopCount(int hopCount);
+    virtual ::omnetpp::simtime_t getSendingTime() const;
+    virtual void setSendingTime(::omnetpp::simtime_t sendingTime);
+    virtual ::omnetpp::simtime_t getRecvTime() const;
+    virtual void setRecvTime(::omnetpp::simtime_t recvTime);
+    virtual ::omnetpp::simtime_t getProcessingTime() const;
+    virtual void setProcessingTime(::omnetpp::simtime_t processingTime);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const PingPongMsg& obj) {obj.parsimPack(b);}

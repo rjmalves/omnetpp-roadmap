@@ -2,5 +2,7 @@ message PingPongMsg
 {
     int source;
     int destination;
-    int hopCount = 0;
+    simtime_t sendingTime;
+    simtime_t recvTime;
+    simtime_t processingTime = 0;
 }

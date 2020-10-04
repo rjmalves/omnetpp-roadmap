@@ -8,7 +8,9 @@ using namespace omnetpp;
 class Txc : public cSimpleModule
 {
     private:
-        int seq;
+        // Node identifier
+        int address;
+        int msgDestination;
         // Self-message for timing
         cMessage *processingTimer;
         // Memory for sending back the received message
@@ -19,6 +21,7 @@ class Txc : public cSimpleModule
         cMessage *timeoutEvent;
         // For stats collection
         simsignal_t processingTime;
+        simsignal_t latencyTime;
     
     public:
         Txc();
@@ -51,19 +54,20 @@ Txc::~Txc()
 
 void Txc::initialize()
 {
-    // Counter for message names
-    seq = 0;
-
     // Creates the timer event -- an ordinary message
     processingTimer = new cMessage("processingTimer");
     // No message yet
     messageBuffer = nullptr;
+    // Gets the self address the messages' destination
+    address = par("address");
+    msgDestination = par("msgDestination");
 
     // Timeout configs
     timeout = 10.0;
     timeoutEvent = new cMessage("timeoutEvent");
 
     // Stats collection variables
+    latencyTime = registerSignal("arrived");
     processingTime = registerSignal("processed");
 
     // Schedules the first message sending to t = 5.0s
@@ -79,7 +83,7 @@ void Txc::handleMessage(cMessage *msg)
 {
     if (msg == processingTimer)
     {
-        // If the arriving message is the timing event, sends the tictocMsg
+        // If the arriving message is the timing event, sends the message
         EV << "Waiting period is over. Sending a new message.\n";
         messageBuffer = generateNewMessage();
         sendCopyOf(messageBuffer);
@@ -89,6 +93,7 @@ void Txc::handleMessage(cMessage *msg)
     else if (msg == timeoutEvent)
     {
         EV << "Message timeout reached. Sending again and restarting timer.\n";
+        messageBuffer->setSendingTime(simTime());
         sendCopyOf(messageBuffer);
         scheduleAt(simTime() + timeout, timeoutEvent);
     }
@@ -106,14 +111,17 @@ void Txc::handleMessage(cMessage *msg)
             delete msg;
             return;
         }
-
-        // If the arriving message is the tictocMsg, stores it and starts the
-        // processing timer
+        // Gets the transmission delay
+        simtime_t latency = simTime() - ttmsg->getSendingTime();
+        // Stores it and starts the processing timer
         simtime_t delay = par("delayTime");
         EV << "Message arrived, starting " << delay << " secs processing...\n";
         messageBuffer = ttmsg;
+        messageBuffer->setProcessingTime(delay);
+        messageBuffer->setRecvTime(0);
         scheduleAt(simTime() + delay, processingTimer);
-        // Emits the signal to store the processing time
+        // Emits the signal to store the processing time and latency
+        emit(latencyTime, latency);
         emit(processingTime, delay);
     }
 }
@@ -122,15 +130,16 @@ PingPongMsg* Txc::generateNewMessage()
 {
     // Generates a message with custom name
     char msgName[20];
-    sprintf(msgName, "m-%d", ++seq);
+    sprintf(msgName, "from:%d,to:%d", address, address + 1);
     PingPongMsg *msg = new PingPongMsg(msgName);
-    msg->setSource(getIndex());
-    msg->setDestination(1);
+    msg->setSource(address);
+    msg->setDestination(msgDestination);
     return msg;
 }
 
 void Txc::sendCopyOf(PingPongMsg *msg)
 {
     // Duplicates and sends the copy of a message
+    msg->setSendingTime(simTime());
     send(check_and_cast<PingPongMsg *>(msg->dup()), "out");
 }

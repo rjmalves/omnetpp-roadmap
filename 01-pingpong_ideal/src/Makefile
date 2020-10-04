@@ -30,10 +30,11 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc, .msg and .sm files
-OBJS = $O/txc.o
+OBJS = $O/txc.o $O/pingpong_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    pingpong.msg
 
 # SM files
 SMFILES =

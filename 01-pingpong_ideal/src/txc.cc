@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <omnetpp.h>
+#include "pingpong_m.h"
 
 using namespace omnetpp;
 
@@ -11,7 +12,7 @@ class Txc : public cSimpleModule
         // Self-message for timing
         cMessage *processingTimer;
         // Memory for sending back the received message
-        cMessage *messageBuffer;
+        PingPongMsg *messageBuffer;
         // Timeout for resending message
         simtime_t timeout;
         // The resending message
@@ -24,8 +25,8 @@ class Txc : public cSimpleModule
     protected:
         virtual void initialize() override;
         virtual void handleMessage(cMessage *msg) override;
-        virtual cMessage* generateNewMessage();
-        virtual void sendCopyOf(cMessage *msg);
+        virtual PingPongMsg* generateNewMessage();
+        virtual void sendCopyOf(PingPongMsg *msg);
 };
 
 Define_Module(Txc);
@@ -88,6 +89,7 @@ void Txc::handleMessage(cMessage *msg)
     }
     else
     {
+        PingPongMsg *ttmsg = check_and_cast<PingPongMsg *>(msg);
         // Cancels the timeout
         cancelEvent(timeoutEvent);
         // If was processing the previous message, abort
@@ -104,23 +106,25 @@ void Txc::handleMessage(cMessage *msg)
         // processing timer
         simtime_t delay = par("delayTime");
         EV << "Message arrived, starting " << delay << " secs processing...\n";
-        messageBuffer = msg;
+        messageBuffer = ttmsg;
         scheduleAt(simTime() + delay, processingTimer);
     }
 }
 
-cMessage* Txc::generateNewMessage()
+PingPongMsg* Txc::generateNewMessage()
 {
     // Generates a message with custom name
     char msgName[20];
     sprintf(msgName, "m-%d", ++seq);
-    cMessage *msg = new cMessage(msgName);
+    PingPongMsg *msg = new PingPongMsg(msgName);
+    msg->setSource(getIndex());
+    msg->setDestination(1);
     return msg;
 }
 
-void Txc::sendCopyOf(cMessage *msg)
+void Txc::sendCopyOf(PingPongMsg *msg)
 {
     // Duplicates and sends the copy of a message
-    cMessage *copy = (cMessage *) msg->dup();
+    PingPongMsg *copy = check_and_cast<PingPongMsg *>(msg->dup());
     send(copy, "out");
 }

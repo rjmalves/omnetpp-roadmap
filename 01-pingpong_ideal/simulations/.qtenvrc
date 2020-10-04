@@ -9,3 +9,27 @@ fast-min-playback-speed=1
 fast-max-playback-speed=1e+6
 fast-min-animation-speed=nan
 fast-max-animation-speed=nan
+
+[Inspector-0]
+object=Tictoc.tic
+classname=Tic
+id=@Variant(\0\0\0\x81\0\0\0\0\0\0\0\x2)
+type=1
+geom=@Rect(-1159 382 694 411)
+fullscreen=false
+
+[Inspector-1]
+object=Tictoc.tic.
+classname=omnetpp::cOutVector
+id=@Variant(\0\0\0\x81\xff\xff\xff\xff\xff\xff\xff\xff)
+type=2
+geom=@Rect(-587 522 400 300)
+fullscreen=false
+
+[Inspector-2]
+object=Tictoc.tic.
+classname=omnetpp::cLongHistogram
+id=@Variant(\0\0\0\x81\xff\xff\xff\xff\xff\xff\xff\xff)
+type=2
+geom=@Rect(-1005 526 400 300)
+fullscreen=false

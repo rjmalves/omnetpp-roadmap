@@ -41,9 +41,9 @@ Txc::Txc()
 Txc::~Txc()
 {
     // Force delete dynamically allocated objs
+    delete messageBuffer;
     cancelAndDelete(processingTimer);
     cancelAndDelete(timeoutEvent);
-    delete messageBuffer;
 }
 
 void Txc::initialize()
@@ -65,7 +65,6 @@ void Txc::initialize()
     if (par("sendMsgOnInit").boolValue())
     {
         EV << "Scheduling the first sending to t = 5.0s\n";
-        messageBuffer = new cMessage("messageBuffer");
         scheduleAt(5.0, processingTimer);
     }
 }
@@ -89,12 +88,6 @@ void Txc::handleMessage(cMessage *msg)
     }
     else
     {
-        // If the arriving message is the tictocMsg, stores it and starts the
-        // processing timer
-        simtime_t delay = par("delayTime");
-        EV << "Message arrived, starting " << delay << " secs processing...\n";
-        messageBuffer = msg;
-
         // Cancels the timeout
         cancelEvent(timeoutEvent);
         // If was processing the previous message, abort
@@ -107,6 +100,11 @@ void Txc::handleMessage(cMessage *msg)
             return;
         }
 
+        // If the arriving message is the tictocMsg, stores it and starts the
+        // processing timer
+        simtime_t delay = par("delayTime");
+        EV << "Message arrived, starting " << delay << " secs processing...\n";
+        messageBuffer = msg;
         scheduleAt(simTime() + delay, processingTimer);
     }
 }

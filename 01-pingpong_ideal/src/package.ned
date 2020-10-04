@@ -29,10 +29,14 @@ simple Toc extends Txc
 
 network Tictoc
 {
+    types:
+        channel Channel extends ned.DelayChannel {
+            delay = 100ms;
+        }
     submodules:
         tic: Tic;  
         toc: Toc;
     connections:
-        tic.out --> {  delay = 100ms; } --> toc.in;
-        tic.in <-- {  delay = 100ms; } <-- toc.out;
+        tic.out --> Channel --> toc.in;
+        tic.in <-- Channel <-- toc.out;
 }

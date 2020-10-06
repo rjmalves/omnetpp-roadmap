@@ -3,6 +3,7 @@
 	<name>02-pingpong_ethernet</name>
 	<comment></comment>
 	<projects>
+		<project>inet</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

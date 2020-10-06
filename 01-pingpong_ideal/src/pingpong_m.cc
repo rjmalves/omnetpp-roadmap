@@ -181,8 +181,6 @@ Register_Class(PingPongMsg)
 
 PingPongMsg::PingPongMsg(const char *name, short kind) : ::omnetpp::cMessage(name,kind)
 {
-    this->source = 0;
-    this->destination = 0;
     this->sendingTime = 0;
     this->recvTime = 0;
     this->processingTime = 0;
@@ -207,8 +205,6 @@ PingPongMsg& PingPongMsg::operator=(const PingPongMsg& other)
 
 void PingPongMsg::copy(const PingPongMsg& other)
 {
-    this->source = other.source;
-    this->destination = other.destination;
     this->sendingTime = other.sendingTime;
     this->recvTime = other.recvTime;
     this->processingTime = other.processingTime;
@@ -217,8 +213,6 @@ void PingPongMsg::copy(const PingPongMsg& other)
 void PingPongMsg::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cMessage::parsimPack(b);
-    doParsimPacking(b,this->source);
-    doParsimPacking(b,this->destination);
     doParsimPacking(b,this->sendingTime);
     doParsimPacking(b,this->recvTime);
     doParsimPacking(b,this->processingTime);
@@ -227,31 +221,9 @@ void PingPongMsg::parsimPack(omnetpp::cCommBuffer *b) const
 void PingPongMsg::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cMessage::parsimUnpack(b);
-    doParsimUnpacking(b,this->source);
-    doParsimUnpacking(b,this->destination);
     doParsimUnpacking(b,this->sendingTime);
     doParsimUnpacking(b,this->recvTime);
     doParsimUnpacking(b,this->processingTime);
-}
-
-int PingPongMsg::getSource() const
-{
-    return this->source;
-}
-
-void PingPongMsg::setSource(int source)
-{
-    this->source = source;
-}
-
-int PingPongMsg::getDestination() const
-{
-    return this->destination;
-}
-
-void PingPongMsg::setDestination(int destination)
-{
-    this->destination = destination;
 }
 
 ::omnetpp::simtime_t PingPongMsg::getSendingTime() const
@@ -349,7 +321,7 @@ const char *PingPongMsgDescriptor::getProperty(const char *propertyname) const
 int PingPongMsgDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 5+basedesc->getFieldCount() : 5;
+    return basedesc ? 3+basedesc->getFieldCount() : 3;
 }
 
 unsigned int PingPongMsgDescriptor::getFieldTypeFlags(int field) const
@@ -364,10 +336,8 @@ unsigned int PingPongMsgDescriptor::getFieldTypeFlags(int field) const
         FD_ISEDITABLE,
         FD_ISEDITABLE,
         FD_ISEDITABLE,
-        FD_ISEDITABLE,
-        FD_ISEDITABLE,
     };
-    return (field>=0 && field<5) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<3) ? fieldTypeFlags[field] : 0;
 }
 
 const char *PingPongMsgDescriptor::getFieldName(int field) const
@@ -379,24 +349,20 @@ const char *PingPongMsgDescriptor::getFieldName(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldNames[] = {
-        "source",
-        "destination",
         "sendingTime",
         "recvTime",
         "processingTime",
     };
-    return (field>=0 && field<5) ? fieldNames[field] : nullptr;
+    return (field>=0 && field<3) ? fieldNames[field] : nullptr;
 }
 
 int PingPongMsgDescriptor::findField(const char *fieldName) const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount() : 0;
-    if (fieldName[0]=='s' && strcmp(fieldName, "source")==0) return base+0;
-    if (fieldName[0]=='d' && strcmp(fieldName, "destination")==0) return base+1;
-    if (fieldName[0]=='s' && strcmp(fieldName, "sendingTime")==0) return base+2;
-    if (fieldName[0]=='r' && strcmp(fieldName, "recvTime")==0) return base+3;
-    if (fieldName[0]=='p' && strcmp(fieldName, "processingTime")==0) return base+4;
+    if (fieldName[0]=='s' && strcmp(fieldName, "sendingTime")==0) return base+0;
+    if (fieldName[0]=='r' && strcmp(fieldName, "recvTime")==0) return base+1;
+    if (fieldName[0]=='p' && strcmp(fieldName, "processingTime")==0) return base+2;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -409,13 +375,11 @@ const char *PingPongMsgDescriptor::getFieldTypeString(int field) const
         field -= basedesc->getFieldCount();
     }
     static const char *fieldTypeStrings[] = {
-        "int",
-        "int",
         "simtime_t",
         "simtime_t",
         "simtime_t",
     };
-    return (field>=0 && field<5) ? fieldTypeStrings[field] : nullptr;
+    return (field>=0 && field<3) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **PingPongMsgDescriptor::getFieldPropertyNames(int field) const
@@ -482,11 +446,9 @@ std::string PingPongMsgDescriptor::getFieldValueAsString(void *object, int field
     }
     PingPongMsg *pp = (PingPongMsg *)object; (void)pp;
     switch (field) {
-        case 0: return long2string(pp->getSource());
-        case 1: return long2string(pp->getDestination());
-        case 2: return simtime2string(pp->getSendingTime());
-        case 3: return simtime2string(pp->getRecvTime());
-        case 4: return simtime2string(pp->getProcessingTime());
+        case 0: return simtime2string(pp->getSendingTime());
+        case 1: return simtime2string(pp->getRecvTime());
+        case 2: return simtime2string(pp->getProcessingTime());
         default: return "";
     }
 }
@@ -501,11 +463,9 @@ bool PingPongMsgDescriptor::setFieldValueAsString(void *object, int field, int i
     }
     PingPongMsg *pp = (PingPongMsg *)object; (void)pp;
     switch (field) {
-        case 0: pp->setSource(string2long(value)); return true;
-        case 1: pp->setDestination(string2long(value)); return true;
-        case 2: pp->setSendingTime(string2simtime(value)); return true;
-        case 3: pp->setRecvTime(string2simtime(value)); return true;
-        case 4: pp->setProcessingTime(string2simtime(value)); return true;
+        case 0: pp->setSendingTime(string2simtime(value)); return true;
+        case 1: pp->setRecvTime(string2simtime(value)); return true;
+        case 2: pp->setProcessingTime(string2simtime(value)); return true;
         default: return false;
     }
 }

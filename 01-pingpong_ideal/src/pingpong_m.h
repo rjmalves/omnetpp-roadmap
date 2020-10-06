@@ -23,8 +23,6 @@
  * <pre>
  * message PingPongMsg
  * {
- *     int source;
- *     int destination;
  *     simtime_t sendingTime;
  *     simtime_t recvTime;
  *     simtime_t processingTime = 0;
@@ -34,8 +32,6 @@
 class PingPongMsg : public ::omnetpp::cMessage
 {
   protected:
-    int source;
-    int destination;
     ::omnetpp::simtime_t sendingTime;
     ::omnetpp::simtime_t recvTime;
     ::omnetpp::simtime_t processingTime;
@@ -57,10 +53,6 @@ class PingPongMsg : public ::omnetpp::cMessage
     virtual void parsimUnpack(omnetpp::cCommBuffer *b) override;
 
     // field getter/setter methods
-    virtual int getSource() const;
-    virtual void setSource(int source);
-    virtual int getDestination() const;
-    virtual void setDestination(int destination);
     virtual ::omnetpp::simtime_t getSendingTime() const;
     virtual void setSendingTime(::omnetpp::simtime_t sendingTime);
     virtual ::omnetpp::simtime_t getRecvTime() const;

@@ -5,22 +5,25 @@ package _01_pingpong_ideal;
 simple Txc
 {
     parameters:
-        int address;
-        int msgDestination;
+        // Message timeout for resending
+        volatile double timeout @unit(s);
+        // Message loss probability
+        volatile double loss;
+        // Defines the "starting node"
         bool sendMsgOnInit = default(false);
-        volatile double delayTime @unit(s);
+        volatile double processingTime @unit(s);
         @display("i=block/routing");
         // Statistics
         @signal[processed](type="long");
-        @statistic[processingTime](title="processing times";
-                                   source="processed";
-                                   record=vector,stats;
-                                   interpolationmode=none);
+        @statistic[processingTimeSignal](title="processing times";
+                                         source="processed";
+                                         record=vector,stats;
+                                         interpolationmode=none);
         @signal[arrived](type="long");
-        @statistic[latencyTime](title="transmission times";
-                                 source="arrived";
-                                 record=vector,stats;
-                                 interpolationmode=none);
+        @statistic[latencySignal](title="transmission times";
+                                  source="arrived";
+                                  record=vector,stats;
+                                  interpolationmode=none);
     gates:
         input in;
         output out;
@@ -29,8 +32,8 @@ simple Txc
 simple Tic extends Txc
 {
     parameters:
-        address = 0;
-        msgDestination = 1;
+        timeout = 10s;
+        loss = 0.1;
         sendMsgOnInit = true;
         @display("i=,cyan");
 }
@@ -38,8 +41,8 @@ simple Tic extends Txc
 simple Toc extends Txc
 {
     parameters:
-        address = 1;
-        msgDestination = 0;
+        timeout = 10s;
+        loss = 0.1;
         sendMsgOnInit = false;
         @display("i=,gold");
 }
@@ -48,7 +51,7 @@ network Tictoc
 {
     types:
         channel Channel extends ned.DelayChannel {
-            delay = truncnormal(0.5s, 0.1s);
+            delay = 100ms;
         }
     submodules:
         tic: Tic;  

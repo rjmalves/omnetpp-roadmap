@@ -2,7 +2,7 @@ package _01_pingpong_ideal;
 
 @license(LGPL);
 
-simple Txc
+simple Node
 {
     parameters:
         // Message timeout for resending
@@ -29,7 +29,7 @@ simple Txc
         output out;
 }
 
-simple Tic extends Txc
+simple Ping extends Node
 {
     parameters:
         timeout = 10s;
@@ -38,7 +38,7 @@ simple Tic extends Txc
         @display("i=,cyan");
 }
 
-simple Toc extends Txc
+simple Pong extends Node
 {
     parameters:
         timeout = 10s;
@@ -47,16 +47,16 @@ simple Toc extends Txc
         @display("i=,gold");
 }
 
-network Tictoc
+network PingPong
 {
     types:
         channel Channel extends ned.DelayChannel {
             delay = 100ms;
         }
     submodules:
-        tic: Tic;  
-        toc: Toc;
+        ping: Ping;  
+        pong: Pong;
     connections:
-        tic.out --> Channel --> toc.in;
-        tic.in <-- Channel <-- toc.out;
+        ping.out --> Channel --> pong.in;
+        ping.in <-- Channel <-- pong.out;
 }

@@ -5,7 +5,7 @@
 
 using namespace omnetpp;
 
-class Txc : public cSimpleModule
+class Node : public cSimpleModule
 {
     private:
         // Self-message for trigger the end of message processing
@@ -25,8 +25,8 @@ class Txc : public cSimpleModule
         double loss;
     
     public:
-        Txc();
-        virtual ~Txc();
+        Node();
+        virtual ~Node();
 
     protected:
         virtual void initialize() override;
@@ -35,9 +35,9 @@ class Txc : public cSimpleModule
         virtual void sendCopyOf(PingPongMsg *msg);
 };
 
-Define_Module(Txc);
+Define_Module(Node);
 
-Txc::Txc()
+Node::Node()
 {
     // This is nedded, otherwise the destructor will crash if
     // the initialize() isn't called because of runtime error
@@ -46,7 +46,7 @@ Txc::Txc()
     timeoutEvent = nullptr;
 }
 
-Txc::~Txc()
+Node::~Node()
 {
     // Force delete dynamically allocated objs
     cancelAndDelete(messageBuffer);
@@ -54,7 +54,7 @@ Txc::~Txc()
     cancelAndDelete(timeoutEvent);
 }
 
-void Txc::initialize()
+void Node::initialize()
 {
     // Creates the processing time self-message
     processingEvent = new cMessage("processingEvent");
@@ -81,7 +81,7 @@ void Txc::initialize()
     }
 }
 
-void Txc::handleMessage(cMessage *msg)
+void Node::handleMessage(cMessage *msg)
 {
     if (msg == processingEvent)
     {
@@ -131,14 +131,14 @@ void Txc::handleMessage(cMessage *msg)
     }
 }
 
-PingPongMsg* Txc::generateNewMessage()
+PingPongMsg* Node::generateNewMessage()
 {
     // Generates a message
     PingPongMsg *msg = new PingPongMsg("message");
     return msg;
 }
 
-void Txc::sendCopyOf(PingPongMsg *msg)
+void Node::sendCopyOf(PingPongMsg *msg)
 {
     // Duplicates and sends the copy of a message
     msg->setSendingTime(simTime());

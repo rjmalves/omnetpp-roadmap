@@ -17,12 +17,12 @@ simple Node
         @signal[processed](type="long");
         @statistic[processingTimeSignal](title="processing times";
                                          source="processed";
-                                         record=vector,stats;
+                                         record=stats;
                                          interpolationmode=none);
         @signal[arrived](type="long");
         @statistic[latencySignal](title="transmission times";
                                   source="arrived";
-                                  record=vector,stats;
+                                  record=stats;
                                   interpolationmode=none);
     gates:
         input in;

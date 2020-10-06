@@ -34,3 +34,4 @@
 # Omnet files and folders
 **/out/*
 **/results/*
+*.anf

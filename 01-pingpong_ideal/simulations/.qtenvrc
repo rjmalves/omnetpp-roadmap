@@ -9,3 +9,7 @@ fast-min-playback-speed=1
 fast-max-playback-speed=1e+6
 fast-min-animation-speed=nan
 fast-max-animation-speed=nan
+
+[General]
+last-configname=AllDataRecord
+last-runnumber=0

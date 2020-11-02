@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for 02-pingpong_ethernet
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep -KINET_PROJ=C:/Users/roger/git/inet -DINET_IMPORT -L$$\(INET_PROJ\)/src -lINET$$\(D\)
+#  opp_makemake -f --deep -KINET_PROJ=/home/rogerio/git/inet -DINET_IMPORT -L$$\(INET_PROJ\)/src -lINET$$\(D\)
 #
 
 # Name of target to be created (-o option)
@@ -39,7 +39,7 @@ MSGFILES =
 SMFILES =
 
 # Other makefile variables (-K)
-INET_PROJ=C:/Users/roger/git/inet
+INET_PROJ=/home/rogerio/git/inet
 
 #------------------------------------------------------------------------------
 
